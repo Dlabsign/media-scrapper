@@ -1,5 +1,7 @@
 import { useState } from 'react'
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || ''
+
 function App() {
   const [topik, setTopik] = useState('')
   const [lokasi, setLokasi] = useState('Indonesia')
@@ -13,7 +15,7 @@ function App() {
     e.preventDefault()
     setLoading(true)
     try {
-      const response = await fetch('/api/scrape', {
+      const response = await fetch(`${API_BASE_URL}/api/scrape`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -72,7 +74,7 @@ function App() {
     setCaptionLoading((prev) => ({ ...prev, [index]: true }))
 
     try {
-      const response = await fetch('/api/generate-caption', {
+      const response = await fetch(`${API_BASE_URL}/api/generate-caption`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -111,7 +113,7 @@ function App() {
       Caption: captions[idx] !== undefined ? captions[idx] : item.Caption,
     }))
 
-    const endpoint = format === 'excel' ? '/api/export/excel' : '/api/export/csv'
+    const endpoint = format === 'excel' ? `${API_BASE_URL}/api/export/excel` : `${API_BASE_URL}/api/export/csv`
     try {
       const response = await fetch(endpoint, {
         method: 'POST',

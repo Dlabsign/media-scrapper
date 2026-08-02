@@ -3,7 +3,8 @@ import io
 import concurrent.futures
 import xml.etree.ElementTree as ET
 from urllib.parse import quote
-from flask import Flask, jsonify, render_template, request, send_file
+from flask import Flask, jsonify, request, send_file
+from flask_cors import CORS
 import requests
 from bs4 import BeautifulSoup
 import pandas as pd
@@ -13,6 +14,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 app = Flask(__name__)
+CORS(app)
 
 HEADERS = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
@@ -109,7 +111,16 @@ def scrape_google_news(topik, lokasi, rentang_waktu, max_results):
 
 @app.route('/')
 def index():
-    return render_template('index2.html')
+    return jsonify({
+        "status": "ok",
+        "service": "Nova — News Scraper & AI Caption Studio",
+        "endpoints": {
+            "scrape": "POST /api/scrape",
+            "generate_caption": "POST /api/generate-caption",
+            "export_excel": "POST /api/export/excel",
+            "export_csv": "POST /api/export/csv",
+        }
+    })
 
 @app.route('/api/scrape', methods=['POST'])
 def handle_scrape():
